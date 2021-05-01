@@ -1,0 +1,45 @@
+[
+  {
+    "name": "${container_name}",
+    "image": "${image}",
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${container_port}
+      }
+    ],
+    "cpu": ${desired_task_cpu},
+    "memory": ${desired_task_memory},
+    "memoryReservation": ${desired_task_memory_reservation},
+    "networkMode": "awsvpc",
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${container_name}"
+      }
+    },
+    "environment": [
+      {
+        "name": "ENV",
+        "value": "production"
+      },
+      {
+        "name": "PORT",
+        "value": "${container_port}"
+      }
+    ],
+    "workingDirectory": "${working_directory}",
+    "healthCheck": {
+      "retries": 3,
+      "command": [
+        "curl -f curl -f http://localhost:${container_port}/alive || exit 1"
+      ],
+      "timeout": 5,
+      "interval": 30,
+      "startPeriod": null
+    }
+  }
+]
